@@ -1,26 +1,46 @@
-const TARGETS={protein:90,water:3,steps:7000,sleep:8};
-const START_KEY='lifeProgramStartDate';
-const todayISO=()=>new Date().toISOString().slice(0,10);
-const storeKey=(name)=>`life90:${todayISO()}:${name}`;
-const $=(id)=>document.getElementById(id);
-const habits=['SRF Energization','Meditation','Prayer','Protein Target','Water Target','Movement','Sleep Before 10:30 PM','Gayathri Program 30 mins','Goal Journal','Night Goal Script','Daily Reflection'];
-const affirmations=['I am becoming a man who takes care of the body God entrusted to him.','My progress comes from returning, not perfection.','I trust myself to come back.','God walks beside me as I heal.','I love myself for who I am.','Health is my main quest. Everything else is a side quest.','I trust myself to bounce back.','I allow myself to be seen before I feel ready.','I trust myself to make responsible financial decisions.','I am creating financial stability one decision at a time.'];
-const schedule={
-  Monday:['Workout A','Build strength safely'], Tuesday:['30 min job search','1 hour feature film writing'], Wednesday:['Workout B','Create weekly visibility content'], Thursday:['30 min job search','1 hour feature film writing'], Friday:['Workout C','Review weekly content'], Saturday:['1 hour feature film writing','Stay with the story'], Sunday:['Recovery Yoga','Full body oil massage','Post weekly content','Weekly review']
+const START_DATE_KEY = 'life90StartDate';
+const todayKey = new Date().toISOString().slice(0,10);
+const dataKey = `life90-${todayKey}`;
+const defaultHabits = ['SRF Energization','Meditation','Prayer','Protein Target','Water Target','Movement','Sleep Before 10:30 PM','Gayathri Program 30 mins','Goal Journal','Night Goal Script','Daily Money Check'];
+const affirmations = ['I am becoming a man who takes care of the body God entrusted to him.','My progress comes from returning, not perfection.','I trust myself to come back.','God walks beside me as I heal.','I love myself for who I am.','Health is my main quest. Everything else is a side quest.','I trust myself to bounce back.','Recovery counts. My body comes before my ego.'];
+const rules = ['Health is the Main Quest. Everything else is a side quest.','Never Miss Twice. If I miss once, I simply return.','No Catching Up. No punishment. No doubling tasks. Continue normally.','Recovery Counts. Recovery is productive.','80% Consistency Wins. Perfection is not required.','No New Systems for 90 Days. Follow this system.','My body comes before my ego. If my body needs rest, recovery wins.'];
+const schedule = {
+  Monday:['Workout A','Health focus','Daily money check'],
+  Tuesday:['1 hour feature film writing','30 min job search','Stay with resistance'],
+  Wednesday:['Workout B','Create visibility content','Health focus'],
+  Thursday:['1 hour feature film writing','30 min job search'],
+  Friday:['Workout C','Review visibility content'],
+  Saturday:['1 hour feature film writing','Weekly reset'],
+  Sunday:['Recovery Yoga','Full Body Oil Massage','Post content','Weekly review']
 };
-function initStart(){if(!localStorage.getItem(START_KEY))localStorage.setItem(START_KEY,todayISO());}
-function dayNum(){const start=new Date(localStorage.getItem(START_KEY));const now=new Date(todayISO());return Math.min(90,Math.max(1,Math.floor((now-start)/86400000)+1));}
-function toast(msg='Saved'){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1400)}
-function save(name,val){localStorage.setItem(storeKey(name),JSON.stringify(val));}
-function load(name,fallback=null){const v=localStorage.getItem(storeKey(name));return v?JSON.parse(v):fallback;}
-function renderRing(){const d=dayNum();$('dayNumber').textContent=d;const pct=d/90;const c=327;$('ringProgress').style.strokeDashoffset=c-(c*pct);}
-function renderAffirmation(){const index=Math.floor(Date.now()/1000/60/60)%affirmations.length;$('affirmationText').textContent=affirmations[index];}
-function renderHabits(){const saved=load('habits',{});const wrap=$('habitList');wrap.innerHTML='';habits.forEach(h=>{const label=document.createElement('label');label.className='check-item';label.innerHTML=`<input type="checkbox" ${saved[h]?'checked':''}><span>${h}</span>`;label.querySelector('input').addEventListener('change',e=>{saved[h]=e.target.checked;save('habits',saved);renderFoundationScore();});wrap.appendChild(label);});renderFoundationScore();}
-function renderFoundationScore(){const saved=load('habits',{});const count=habits.filter(h=>saved[h]).length;$('foundationScore').textContent=`${count}/${habits.length}`;}
-function renderTodayTasks(){const name=new Date().toLocaleDateString('en-GB',{weekday:'long'});$('todayName').textContent=name;const tasks=schedule[name]||[];$('todayTasks').innerHTML=tasks.map((t,i)=>`<div class="focus-item"><span>${t}</span><b>${i===0?'Main':'Side'}</b></div>`).join('');}
-function renderHealth(){['protein','water','steps','sleep','bp','mood','energy','wrist'].forEach(id=>{const el=$(id);const v=load(id,'');el.value=v;el.addEventListener('input',()=>{save(id,el.value);renderBars();});});$('saveHealth').onclick=()=>toast('Health check-in saved');renderBars();}
-function renderBars(){const vals={protein:+($('protein').value||0),water:+($('water').value||0),steps:+($('steps').value||0),sleep:+($('sleep').value||0)};const entries=Object.entries(TARGETS);let total=0;$('healthBars').innerHTML=entries.map(([k,t])=>{const pct=Math.min(100,Math.round((vals[k]/t)*100)||0);total+=pct;return `<div class="bar-row"><div class="bar-meta"><span>${k[0].toUpperCase()+k.slice(1)}</span><span>${pct}%</span></div><div class="bar"><span style="width:${pct}%"></span></div></div>`}).join('');$('healthPercent').textContent=`${Math.round(total/entries.length)}%`;}
-function renderVisibility(){const week=Math.ceil(dayNum()/7);const currentBlock=Math.ceil(week/4);let cards='';for(let i=1;i<=4;i++){const w=(currentBlock-1)*4+i;if(w>13)break;const even=w%2===0;cards+=`<div class="vis-card ${w===week?'active':''}"><h3>Week ${w}</h3><p>${even?'Face / voice required':'Image or text allowed'}</p></div>`;}$('visibilityWeek').innerHTML=cards;['created','reviewed','posted'].forEach(id=>{const el=$(id);el.checked=!!load(id,false);el.onchange=()=>save(id,el.checked);});}
-function renderMoneyReview(){$('moneyCheck').value=load('moneyCheck','');$('saveMoney').onclick=()=>{save('moneyCheck',$('moneyCheck').value);toast('Money check saved')};['scoreHealth','scoreCreativity','scoreVisibility','scoreMoney','scoreSpirituality','weeklyReflection'].forEach(id=>{const el=$(id);el.value=load(id,'');el.addEventListener('input',()=>save(id,el.value));});$('saveReview').onclick=()=>toast('Weekly review saved');}
-function tabs(){document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab,.panel').forEach(el=>el.classList.remove('active'));btn.classList.add('active');$(btn.dataset.tab).classList.add('active');}));}
-initStart();renderRing();renderAffirmation();renderHabits();renderTodayTasks();renderHealth();renderVisibility();renderMoneyReview();tabs();
+let state = load(dataKey) || {habits: defaultHabits.map(name=>({name,done:false}))};
+let start = localStorage.getItem(START_DATE_KEY); if(!start){start=todayKey;localStorage.setItem(START_DATE_KEY,start)}
+function load(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}}
+function save(){localStorage.setItem(dataKey, JSON.stringify(state))}
+function dayNumber(){return Math.min(90, Math.max(1, Math.floor((new Date(todayKey)-new Date(start))/(86400000))+1));}
+function currentWeek(){return Math.ceil(dayNumber()/7)}
+function el(id){return document.getElementById(id)}
+function init(){
+  el('todayDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const d=dayNumber(); el('dayNumber').textContent=d; el('ringProgress').style.strokeDashoffset = 327 - (327*(d/90));
+  el('affirmationText').textContent = affirmations[Math.floor(Date.now()/3600000)%affirmations.length];
+  renderHabits(); renderFocus(); renderSchedule(); renderVisibility(); renderRules(); bindInputs();
+}
+function renderHabits(){
+  const list=el('habitList'); list.innerHTML='';
+  state.habits.forEach((h,i)=>{ const row=document.createElement('div'); row.className='habit'; row.innerHTML=`<div class="habit-left"><input type="checkbox" ${h.done?'checked':''}/><span class="habit-name ${h.done?'done':''}">${h.name}</span></div><div><button class="icon-btn rename">Rename</button> <button class="icon-btn del">Delete</button></div>`;
+    row.querySelector('input').onchange=e=>{h.done=e.target.checked;save();renderHabits()};
+    row.querySelector('.del').onclick=()=>{state.habits.splice(i,1);save();renderHabits()};
+    row.querySelector('.rename').onclick=()=>{const n=prompt('Rename habit/task',h.name); if(n&&n.trim()){h.name=n.trim();save();renderHabits()}};
+    list.appendChild(row);
+  });
+  const done=state.habits.filter(h=>h.done).length; el('habitCount').textContent=`${done}/${state.habits.length}`;
+}
+el('habitForm').addEventListener('submit',e=>{e.preventDefault();const v=el('newHabit').value.trim();if(v){state.habits.push({name:v,done:false});el('newHabit').value='';save();renderHabits()}});
+function renderFocus(){const day=new Date().toLocaleDateString('en-GB',{weekday:'long'}); el('todayFocus').innerHTML=(schedule[day]||[]).map((x,i)=>`<div class="focus-pill"><b>${x}</b><span>${i==0?'Main':'Side'}</span></div>`).join('')||'<p>No fixed focus. Recovery counts.</p>'}
+function renderSchedule(){const day=new Date().toLocaleDateString('en-GB',{weekday:'long'}); el('weeklySchedule').innerHTML=Object.entries(schedule).map(([d,items])=>`<div class="schedule-card ${d===day?'today':''}"><h4>${d}</h4><ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`).join('')}
+function renderVisibility(){const week=currentWeek(); let html=''; for(let i=1;i<=13;i++){const req=i%2===0?'Face / Voice / Video required':'Image / Text optional'; html+=`<div class="timeline-item ${i===week?'active':''}"><div><b>Week ${i}</b><small>${req}</small></div><span class="badge">${i%2===0?'Be seen':'Prepare'}</span></div>`} el('visibilityPlan').innerHTML=html}
+function renderRules(){el('rulesList').innerHTML=rules.map((r,i)=>`<div class="rule-card"><b>Rule ${i+1}</b>${r}</div>`).join('')}
+function bindInputs(){['protein','water','steps','sleep','bp','wrist','mood','energy','healthNote','workoutType','workoutLog','morningJournal','eveningJournal','scoreHealth','scoreCreativity','scoreVisibility','scoreMoney','scoreSpirit','weeklyJournal'].forEach(id=>{const node=el(id); if(!node)return; if(state[id]!==undefined) node.value=state[id]; node.addEventListener('input',()=>{state[id]=node.value;save(); if(id==='wrist')el('wristVal').textContent=node.value+'/10'; if(id==='energy')el('energyVal').textContent=node.value+'/10';});}); el('wristVal').textContent=(el('wrist').value||0)+'/10'; el('energyVal').textContent=(el('energy').value||5)+'/10'}
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab,.view').forEach(x=>x.classList.remove('active'));btn.classList.add('active');el(btn.dataset.tab).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'});}));
+init();
