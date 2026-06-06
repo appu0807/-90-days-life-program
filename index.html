@@ -1,143 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#f7fbff" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f8f4ea" />
   <title>90 Days Life Program</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="ambient blue"></div><div class="ambient green"></div><div class="ambient gold"></div>
-  <main class="app">
-    <header class="hero card">
+  <div class="app-shell">
+    <header class="hero">
       <div>
-        <p class="eyebrow">Appu’s Personal Operating System</p>
+        <p class="eyebrow">Appu's personal operating system</p>
         <h1>90 Days Life Program</h1>
-        <p class="subtitle">Health is the Main Quest. Everything else is a side quest.</p>
-        <p class="date" id="todayDate"></p>
+        <p class="date" id="dateLine">Today</p>
       </div>
-      <div class="ring-wrap">
-        <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52"></circle><circle class="progress" id="ringProgress" cx="60" cy="60" r="52"></circle></svg>
-        <div><strong id="dayNumber">1</strong><span>/90</span></div>
-      </div>
+      <div class="day-pill"><span id="dayNumber">1</span><small>/90</small></div>
     </header>
 
-    <section class="card affirmation">
-      <span>Today’s anchor</span>
-      <h2 id="affirmationText"></h2>
+    <section class="anchor-card">
+      <p>Today's anchor</p>
+      <h2 id="affirmation">Health is the Main Quest. Everything else is a side quest.</h2>
     </section>
 
-    <nav class="tabs">
-      <button class="tab active" data-tab="today">Today</button>
-      <button class="tab" data-tab="schedule">Schedule</button>
-      <button class="tab" data-tab="health">Health</button>
-      <button class="tab" data-tab="workout">Workout</button>
-      <button class="tab" data-tab="journal">Journal</button>
-      <button class="tab" data-tab="visibility">Visibility</button>
-      <button class="tab" data-tab="review">Review</button>
-      <button class="tab" data-tab="rules">Rules</button>
-    </nav>
+    <main id="screen"></main>
+  </div>
 
-    <section id="today" class="view active grid two">
-      <div class="card">
-        <div class="section-head"><div><p class="label">Daily checklist</p><h3>Return gently today</h3></div><strong id="habitCount">0/0</strong></div>
-        <div id="habitList" class="list"></div>
-        <form id="habitForm" class="inline-form"><input id="newHabit" placeholder="Add new habit/task" /><button>Add</button></form>
-      </div>
-      <div class="card">
-        <p class="label">Today’s focus</p>
-        <div id="todayFocus" class="focus-list"></div>
-        <div class="note blue-note">No catching up. No punishment. Just return.</div>
-      </div>
-    </section>
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button data-tab="today" class="active">🏠<span>Today</span></button>
+    <button data-tab="schedule">📅<span>Plan</span></button>
+    <button data-tab="health">❤️<span>Health</span></button>
+    <button data-tab="journal">✍️<span>Journal</span></button>
+    <button data-tab="review">📈<span>Review</span></button>
+  </nav>
 
-    <section id="schedule" class="view">
-      <div class="card">
-        <div class="section-head"><div><p class="label">Weekly plan</p><h3>What am I doing this week?</h3></div></div>
-        <div id="weeklySchedule" class="week-grid"></div>
-      </div>
-    </section>
-
-    <section id="health" class="view grid two">
-      <div class="card">
-        <p class="label">Health tracking</p><h3>Daily body check</h3>
-        <div class="metrics">
-          <label>Protein <input type="number" id="protein" placeholder="90" /> <span>g / 90g</span></label>
-          <label>Water <input type="number" step="0.1" id="water" placeholder="3" /> <span>L / 3L</span></label>
-          <label>Steps <input type="number" id="steps" placeholder="7000" /> <span>/ 7000</span></label>
-          <label>Sleep <input type="number" step="0.5" id="sleep" placeholder="8" /> <span>hours</span></label>
-          <label>Blood Pressure <input id="bp" placeholder="120/80" /> <span>simple entry</span></label>
-          <label>Wrist Pain <input type="range" min="0" max="10" id="wrist" /> <span id="wristVal">0/10</span></label>
-          <label>Mood <select id="mood"><option>Calm</option><option>Good</option><option>Tired</option><option>Anxious</option><option>Grateful</option></select></label>
-          <label>Energy <input type="range" min="1" max="10" id="energy" /> <span id="energyVal">5/10</span></label>
-        </div>
-      </div>
-      <div class="card">
-        <p class="label">Health note</p><h3>What does my body need?</h3>
-        <textarea id="healthNote" placeholder="Write one honest sentence..."></textarea>
-      </div>
-    </section>
-
-    <section id="workout" class="view grid two">
-      <div class="card">
-        <p class="label">Workout system</p><h3>Safe strength, no ego</h3>
-        <div class="rules-list"><p><b>Monday:</b> Workout A</p><p><b>Wednesday:</b> Workout B</p><p><b>Friday:</b> Workout C</p><p><b>Sunday:</b> Recovery Yoga + Full Body Oil Massage</p><p>Recovery days between workouts. No back-to-back workouts.</p></div>
-      </div>
-      <div class="card">
-        <p class="label">Workout log</p><h3>Today’s movement</h3>
-        <select id="workoutType"><option>Rest / Recovery</option><option>Workout A</option><option>Workout B</option><option>Workout C</option><option>Recovery Yoga</option><option>Walk</option><option>Mobility</option></select>
-        <textarea id="workoutLog" placeholder="Exercises, reps, wrist notes, how it felt..."></textarea>
-      </div>
-    </section>
-
-    <section id="journal" class="view grid two">
-      <div class="card">
-        <p class="label">Morning check-in</p><h3>Start slowly</h3>
-        <textarea id="morningJournal" placeholder="How am I feeling? What is my one gentle focus today?"></textarea>
-      </div>
-      <div class="card">
-        <p class="label">Evening journal</p><h3>What did I learn today?</h3>
-        <textarea id="eveningJournal" placeholder="What did I learn today? What am I grateful for? Did I return?"></textarea>
-      </div>
-    </section>
-
-    <section id="visibility" class="view grid two">
-      <div class="card">
-        <p class="label">Visibility rules</p><h3>I allow myself to be seen</h3>
-        <ol class="rules-list"><li>One piece of content must be released every week.</li><li>No image-only or text-only content two weeks in a row.</li><li>Every second week must include my face, voice, or me speaking on camera.</li><li>The goal is visibility, not perfection.</li><li>I allow myself to be seen before I feel ready.</li></ol>
-      </div>
-      <div class="card">
-        <p class="label">90-day pipeline</p><h3>This week’s visibility</h3>
-        <div id="visibilityPlan" class="timeline"></div>
-      </div>
-    </section>
-
-    <section id="review" class="view grid two">
-      <div class="card">
-        <p class="label">Weekly review</p><h3>Sunday reflection</h3>
-        <div class="scores">
-          <label>Health <input type="number" min="0" max="10" id="scoreHealth" /> /10</label>
-          <label>Creativity <input type="number" min="0" max="10" id="scoreCreativity" /> /10</label>
-          <label>Visibility <input type="number" min="0" max="10" id="scoreVisibility" /> /10</label>
-          <label>Money <input type="number" min="0" max="10" id="scoreMoney" /> /10</label>
-          <label>Spirituality <input type="number" min="0" max="10" id="scoreSpirit" /> /10</label>
-        </div>
-      </div>
-      <div class="card">
-        <p class="label">Weekly journal</p><h3>What am I learning?</h3>
-        <textarea id="weeklyJournal" placeholder="What worked? What didn’t? What will I improve next week?"></textarea>
-      </div>
-    </section>
-
-    <section id="rules" class="view">
-      <div class="card">
-        <p class="label">The Rules</p><h3>The system protects peace</h3>
-        <div class="rules-grid" id="rulesList"></div>
-      </div>
-    </section>
-  </main>
   <script src="script.js"></script>
 </body>
 </html>

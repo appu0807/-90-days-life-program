@@ -1,46 +1,34 @@
-const START_DATE_KEY = 'life90StartDate';
-const todayKey = new Date().toISOString().slice(0,10);
-const dataKey = `life90-${todayKey}`;
-const defaultHabits = ['SRF Energization','Meditation','Prayer','Protein Target','Water Target','Movement','Sleep Before 10:30 PM','Gayathri Program 30 mins','Goal Journal','Night Goal Script','Daily Money Check'];
-const affirmations = ['I am becoming a man who takes care of the body God entrusted to him.','My progress comes from returning, not perfection.','I trust myself to come back.','God walks beside me as I heal.','I love myself for who I am.','Health is my main quest. Everything else is a side quest.','I trust myself to bounce back.','Recovery counts. My body comes before my ego.'];
-const rules = ['Health is the Main Quest. Everything else is a side quest.','Never Miss Twice. If I miss once, I simply return.','No Catching Up. No punishment. No doubling tasks. Continue normally.','Recovery Counts. Recovery is productive.','80% Consistency Wins. Perfection is not required.','No New Systems for 90 Days. Follow this system.','My body comes before my ego. If my body needs rest, recovery wins.'];
-const schedule = {
-  Monday:['Workout A','Health focus','Daily money check'],
-  Tuesday:['1 hour feature film writing','30 min job search','Stay with resistance'],
-  Wednesday:['Workout B','Create visibility content','Health focus'],
-  Thursday:['1 hour feature film writing','30 min job search'],
-  Friday:['Workout C','Review visibility content'],
-  Saturday:['1 hour feature film writing','Weekly reset'],
-  Sunday:['Recovery Yoga','Full Body Oil Massage','Post content','Weekly review']
-};
-let state = load(dataKey) || {habits: defaultHabits.map(name=>({name,done:false}))};
-let start = localStorage.getItem(START_DATE_KEY); if(!start){start=todayKey;localStorage.setItem(START_DATE_KEY,start)}
-function load(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}}
-function save(){localStorage.setItem(dataKey, JSON.stringify(state))}
-function dayNumber(){return Math.min(90, Math.max(1, Math.floor((new Date(todayKey)-new Date(start))/(86400000))+1));}
-function currentWeek(){return Math.ceil(dayNumber()/7)}
-function el(id){return document.getElementById(id)}
-function init(){
-  el('todayDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  const d=dayNumber(); el('dayNumber').textContent=d; el('ringProgress').style.strokeDashoffset = 327 - (327*(d/90));
-  el('affirmationText').textContent = affirmations[Math.floor(Date.now()/3600000)%affirmations.length];
-  renderHabits(); renderFocus(); renderSchedule(); renderVisibility(); renderRules(); bindInputs();
-}
-function renderHabits(){
-  const list=el('habitList'); list.innerHTML='';
-  state.habits.forEach((h,i)=>{ const row=document.createElement('div'); row.className='habit'; row.innerHTML=`<div class="habit-left"><input type="checkbox" ${h.done?'checked':''}/><span class="habit-name ${h.done?'done':''}">${h.name}</span></div><div><button class="icon-btn rename">Rename</button> <button class="icon-btn del">Delete</button></div>`;
-    row.querySelector('input').onchange=e=>{h.done=e.target.checked;save();renderHabits()};
-    row.querySelector('.del').onclick=()=>{state.habits.splice(i,1);save();renderHabits()};
-    row.querySelector('.rename').onclick=()=>{const n=prompt('Rename habit/task',h.name); if(n&&n.trim()){h.name=n.trim();save();renderHabits()}};
-    list.appendChild(row);
-  });
-  const done=state.habits.filter(h=>h.done).length; el('habitCount').textContent=`${done}/${state.habits.length}`;
-}
-el('habitForm').addEventListener('submit',e=>{e.preventDefault();const v=el('newHabit').value.trim();if(v){state.habits.push({name:v,done:false});el('newHabit').value='';save();renderHabits()}});
-function renderFocus(){const day=new Date().toLocaleDateString('en-GB',{weekday:'long'}); el('todayFocus').innerHTML=(schedule[day]||[]).map((x,i)=>`<div class="focus-pill"><b>${x}</b><span>${i==0?'Main':'Side'}</span></div>`).join('')||'<p>No fixed focus. Recovery counts.</p>'}
-function renderSchedule(){const day=new Date().toLocaleDateString('en-GB',{weekday:'long'}); el('weeklySchedule').innerHTML=Object.entries(schedule).map(([d,items])=>`<div class="schedule-card ${d===day?'today':''}"><h4>${d}</h4><ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`).join('')}
-function renderVisibility(){const week=currentWeek(); let html=''; for(let i=1;i<=13;i++){const req=i%2===0?'Face / Voice / Video required':'Image / Text optional'; html+=`<div class="timeline-item ${i===week?'active':''}"><div><b>Week ${i}</b><small>${req}</small></div><span class="badge">${i%2===0?'Be seen':'Prepare'}</span></div>`} el('visibilityPlan').innerHTML=html}
-function renderRules(){el('rulesList').innerHTML=rules.map((r,i)=>`<div class="rule-card"><b>Rule ${i+1}</b>${r}</div>`).join('')}
-function bindInputs(){['protein','water','steps','sleep','bp','wrist','mood','energy','healthNote','workoutType','workoutLog','morningJournal','eveningJournal','scoreHealth','scoreCreativity','scoreVisibility','scoreMoney','scoreSpirit','weeklyJournal'].forEach(id=>{const node=el(id); if(!node)return; if(state[id]!==undefined) node.value=state[id]; node.addEventListener('input',()=>{state[id]=node.value;save(); if(id==='wrist')el('wristVal').textContent=node.value+'/10'; if(id==='energy')el('energyVal').textContent=node.value+'/10';});}); el('wristVal').textContent=(el('wrist').value||0)+'/10'; el('energyVal').textContent=(el('energy').value||5)+'/10'}
-document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab,.view').forEach(x=>x.classList.remove('active'));btn.classList.add('active');el(btn.dataset.tab).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'});}));
+const PROGRAM_START_KEY = 'life90-start-date';
+const STORE_KEY = 'life90-v3';
+const affirmations = [
+  'Health is the Main Quest. Everything else is a side quest.',
+  'My progress comes from returning, not perfection.',
+  'I trust myself to come back.',
+  'God walks beside me as I heal.',
+  'Recovery counts. My body comes before my ego.',
+  'I allow myself to be seen before I feel ready.',
+  'I am becoming a man who takes care of the body God entrusted to him.'
+];
+const defaultHabits=['SRF Energization','Meditation','Prayer','Protein Target','Water Target','Movement','Sleep Before 10:30 PM','Gayathri Program','Goal Journal','Night Goal Script','Daily Money Check'];
+const weeklyPlan={Monday:['Workout A'],Tuesday:['1 hour feature film writing','30 min job search'],Wednesday:['Workout B','Visibility: Create'],Thursday:['1 hour feature film writing','30 min job search'],Friday:['Workout C','Visibility: Review'],Saturday:['1 hour feature film writing'],Sunday:['Recovery Yoga','Full Body Oil Massage','Visibility: Post','Weekly Review']};
+let state=load();let active='today';
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function prettyDate(){return new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+function dayNumber(){let start=localStorage.getItem(PROGRAM_START_KEY);if(!start){start=todayISO();localStorage.setItem(PROGRAM_START_KEY,start)};return Math.min(90,Math.max(1,Math.floor((new Date(todayISO())-new Date(start))/(864e5))+1))}
+function load(){return JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(state))}
+function day(){const d=todayISO();state[d] ||= {habits:defaultHabits.map(t=>({text:t,done:false})),health:{protein:0,water:0,steps:0,sleep:0,bp:'',wrist:0,mood:'Calm',energy:5},journal:{learn:'',grateful:'',challenge:'',return:''},workout:{type:'Rest / Recovery',notes:''},review:{health:0,creativity:0,visibility:0,money:0,spirituality:0,worked:'',didnt:'',learning:'',improve:''}};return state[d]}
+function init(){document.getElementById('dateLine').textContent=prettyDate();document.getElementById('dayNumber').textContent=dayNumber();document.getElementById('affirmation').textContent=affirmations[dayNumber()%affirmations.length];render();document.querySelectorAll('.bottom-nav button').forEach(b=>b.onclick=()=>{active=b.dataset.tab;document.querySelectorAll('.bottom-nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render();scrollTo(0,0)})}
+function render(){const s=document.getElementById('screen');if(active==='today')s.innerHTML=todayView();if(active==='schedule')s.innerHTML=scheduleView();if(active==='health')s.innerHTML=healthView();if(active==='journal')s.innerHTML=journalView();if(active==='review')s.innerHTML=reviewView();bind()}
+function complete(){const h=day().habits;return h.length?Math.round(h.filter(x=>x.done).length/h.length*100):0}
+function todayView(){const d=day();return `<section class="screen-grid"><div class="card"><h3>Daily checklist <span class="subtle">${d.habits.filter(h=>h.done).length}/${d.habits.length}</span></h3><div class="progress"><span style="width:${complete()}%"></span></div><div id="habits">${d.habits.map((h,i)=>`<div class="habit"><input type="checkbox" data-habit="${i}" ${h.done?'checked':''}><input type="text" data-rename="${i}" value="${escapeHTML(h.text)}"><button class="icon-btn" data-del="${i}">✕</button></div>`).join('')}</div><div class="add-row"><input id="newHabit" placeholder="Add habit or task"><button class="primary" id="addHabit">Add</button></div></div><div class="card"><h3>Today's focus</h3><p class="subtle">No catching up. No punishment. Just return.</p><p><b>${new Date().toLocaleDateString('en-GB',{weekday:'long'})}</b></p>${(weeklyPlan[new Date().toLocaleDateString('en-GB',{weekday:'long'})]||[]).map(t=>`<span class="task-chip">${t}</span>`).join('')}</div></section>`}
+function healthView(){const h=day().health;return `<div class="card"><h3>Health tracking</h3><div class="stat-grid">${num('protein','Protein','g','90',h.protein)}${num('water','Water','L','3',h.water)}${num('steps','Steps','','7000',h.steps)}${num('sleep','Sleep','hours','8',h.sleep)}<div class="stat"><label>Blood Pressure</label><input data-health="bp" value="${h.bp}" placeholder="120/80"></div><div class="stat"><label>Wrist Pain: <span id="wristVal">${h.wrist}</span>/10</label><input type="range" min="0" max="10" data-health="wrist" value="${h.wrist}"></div><div class="stat"><label>Mood</label><select data-health="mood"><option ${h.mood==='Calm'?'selected':''}>Calm</option><option ${h.mood==='Good'?'selected':''}>Good</option><option ${h.mood==='Tired'?'selected':''}>Tired</option><option ${h.mood==='Anxious'?'selected':''}>Anxious</option><option ${h.mood==='Strong'?'selected':''}>Strong</option></select></div><div class="stat"><label>Energy: ${h.energy}/10</label><input type="range" min="0" max="10" data-health="energy" value="${h.energy}"></div></div></div><div class="card"><h3>Workout log</h3><select data-workout="type"><option>Rest / Recovery</option><option>Workout A</option><option>Workout B</option><option>Workout C</option><option>Recovery Yoga</option></select><textarea class="textarea" data-workout="notes" placeholder="Exercises, reps, wrist notes, how it felt...">${day().workout.notes}</textarea></div>`}
+function num(k,label,unit,target,value){return `<div class="stat"><label>${label}</label><input type="number" data-health="${k}" value="${value}" placeholder="0"><small class="subtle">Target: ${target} ${unit}</small></div>`}
+function scheduleView(){return `<div class="card"><h3>Weekly schedule</h3>${Object.entries(weeklyPlan).map(([day,tasks])=>`<div class="schedule-day"><strong>${day}</strong>${tasks.map(t=>`<span class="task-chip">${t}</span>`).join('')}</div>`).join('')}</div><div class="card rules"><h3>Visibility rules</h3><ol><li>One piece of content must be released every week.</li><li>No image-only or text-only content two weeks in a row.</li><li>Every second week must include your face, voice, or you visibly present.</li><li>The goal is visibility, not perfection.</li><li>I allow myself to be seen before I feel ready.</li></ol></div>`}
+function journalView(){const j=day().journal;return `<div class="card"><h3>Daily journal</h3><label class="subtle">What did I learn today?</label><textarea class="textarea" data-journal="learn">${j.learn}</textarea><label class="subtle">What am I grateful for?</label><textarea class="textarea" data-journal="grateful">${j.grateful}</textarea><label class="subtle">What challenged me today?</label><textarea class="textarea" data-journal="challenge">${j.challenge}</textarea><label class="subtle">Did I return today?</label><textarea class="textarea" data-journal="return">${j.return}</textarea></div>`}
+function reviewView(){const r=day().review;return `<div class="card"><h3>Weekly review</h3><div class="stat-grid">${score('health','Health',r.health)}${score('creativity','Creativity',r.creativity)}${score('visibility','Visibility',r.visibility)}${score('money','Money',r.money)}${score('spirituality','Spirituality',r.spirituality)}</div></div><div class="card"><h3>Weekly journal</h3>${reviewText('worked','What worked?',r.worked)}${reviewText('didnt',"What didn’t?",r.didnt)}${reviewText('learning','What am I learning?',r.learning)}${reviewText('improve','What will I improve next week?',r.improve)}<button class="ghost" id="exportData">Export backup</button></div><div class="card rules"><h3>The Rules</h3><ol><li>Health is the Main Quest.</li><li>Never Miss Twice.</li><li>No Catching Up.</li><li>Recovery Counts.</li><li>80% Consistency Wins.</li><li>No New Systems for 90 Days.</li><li>My body comes before my ego.</li></ol></div>`}
+function score(k,l,v){return `<div class="stat"><label>${l}: ${v}/10</label><input type="range" min="0" max="10" data-review="${k}" value="${v}"></div>`}
+function reviewText(k,l,v){return `<label class="subtle">${l}</label><textarea class="textarea" data-review="${k}">${v}</textarea>`}
+function bind(){document.querySelectorAll('[data-habit]').forEach(el=>el.onchange=e=>{day().habits[e.target.dataset.habit].done=e.target.checked;save();render()});document.querySelectorAll('[data-rename]').forEach(el=>el.oninput=e=>{day().habits[e.target.dataset.rename].text=e.target.value;save()});document.querySelectorAll('[data-del]').forEach(el=>el.onclick=e=>{day().habits.splice(e.target.dataset.del,1);save();render()});const add=document.getElementById('addHabit');if(add)add.onclick=()=>{const v=document.getElementById('newHabit').value.trim();if(v){day().habits.push({text:v,done:false});save();render()}};document.querySelectorAll('[data-health]').forEach(el=>el.oninput=e=>{day().health[e.target.dataset.health]=e.target.value;save();render()});document.querySelectorAll('[data-journal]').forEach(el=>el.oninput=e=>{day().journal[e.target.dataset.journal]=e.target.value;save()});document.querySelectorAll('[data-workout]').forEach(el=>el.oninput=e=>{day().workout[e.target.dataset.workout]=e.target.value;save()});document.querySelectorAll('[data-review]').forEach(el=>el.oninput=e=>{day().review[e.target.dataset.review]=e.target.value;save()});const ex=document.getElementById('exportData');if(ex)ex.onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='90-days-life-program-backup.json';a.click()}}
+function escapeHTML(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 init();
