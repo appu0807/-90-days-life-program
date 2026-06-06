@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f7f4ea" />
+  <meta name="theme-color" content="#f8f4e8" />
   <title>90 Days Life Program</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
@@ -12,79 +12,26 @@
   <div class="app-shell">
     <header class="hero">
       <div>
-        <p class="eyebrow">Appu’s Personal Operating System</p>
+        <p class="eyebrow">Appu's Personal Operating System</p>
         <h1>90 Days Life Program</h1>
-        <p class="sub" id="todayDate"></p>
+        <p id="todayDate" class="muted"></p>
       </div>
-      <div class="day-pill"><span id="dayNumber">1</span><small>/90</small></div>
+      <div class="day-ring" aria-label="90 day progress">
+        <strong id="dayNumber">1</strong><span>/90</span>
+      </div>
     </header>
 
-    <section class="anchor-card">
-      <p>Today’s anchor</p>
-      <h2 id="affirmation">Health is the Main Quest. Everything else is a side quest.</h2>
-    </section>
+    <main id="view" class="view"></main>
 
-    <main id="view"></main>
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-btn active" data-view="today">Today</button>
+      <button class="nav-btn" data-view="habits">Habits</button>
+      <button class="nav-btn" data-view="log">Log</button>
+      <button class="nav-btn" data-view="health">Health</button>
+      <button class="nav-btn" data-view="plan">Plan</button>
+      <button class="nav-btn" data-view="report">Report</button>
+    </nav>
   </div>
-
-  <nav class="bottom-nav" aria-label="Main navigation">
-    <button data-tab="today" class="active">Today</button>
-    <button data-tab="log">Log</button>
-    <button data-tab="habits">Habits</button>
-    <button data-tab="health">Health</button>
-    <button data-tab="schedule">Plan</button>
-    <button data-tab="report">Report</button>
-  </nav>
-
-  <template id="today-template">
-    <section class="panel stack">
-      <div class="section-head"><div><p class="label">Daily Checklist</p><h3>Return gently today</h3></div><div class="score"><span id="doneCount">0</span>/<span id="totalCount">0</span></div></div>
-      <div class="progress-line"><span id="dailyProgress"></span></div>
-      <div id="habitList" class="habit-list"></div>
-    </section>
-    <section class="grid two">
-      <div class="panel stack"><p class="label">Health quick entry</p><div id="healthQuick"></div></div>
-      <div class="panel stack"><p class="label">Journal</p><textarea id="dailyJournal" placeholder="What did I learn today?"></textarea><textarea id="dailyGratitude" placeholder="What am I grateful for?"></textarea></div>
-    </section>
-  </template>
-
-  <template id="log-template">
-    <section class="panel stack">
-      <div class="section-head"><div><p class="label">Past Entries</p><h3>90-day history</h3></div><input id="logDate" type="date" /></div>
-      <div id="logDetail" class="log-detail"></div>
-    </section>
-  </template>
-
-  <template id="habits-template">
-    <section class="panel stack">
-      <div class="section-head"><div><p class="label">Core Habit Template</p><h3>Edit once. Applies to all 90 days.</h3></div></div>
-      <div class="add-row"><input id="newHabit" placeholder="Add a core habit..." /><select id="newCategory"><option>Spiritual</option><option>Health</option><option>Growth</option><option>Money</option><option>Custom</option></select><button id="addHabit">Add</button></div>
-      <div id="habitEditor" class="habit-editor"></div>
-    </section>
-  </template>
-
-  <template id="health-template">
-    <section class="panel stack">
-      <p class="label">Health Tracking</p><h3>Simple daily entry</h3>
-      <div id="healthForm" class="metric-grid"></div>
-    </section>
-    <section class="panel stack"><p class="label">Workout Log</p><select id="workoutType"><option>Rest / Recovery</option><option>Workout A</option><option>Workout B</option><option>Workout C</option><option>Recovery Yoga</option></select><textarea id="workoutNotes" placeholder="Exercises, reps, wrist notes, how it felt..."></textarea></section>
-  </template>
-
-  <template id="schedule-template">
-    <section class="panel stack"><p class="label">Weekly Plan</p><h3>Your calm rhythm</h3><div id="scheduleList" class="schedule-list"></div></section>
-    <section class="panel stack"><p class="label">Visibility Rules</p><ul class="rules"><li>One piece of content every week.</li><li>No image-only or text-only content two weeks in a row.</li><li>Every second week must include face, voice, or direct presence.</li><li>The goal is visibility, not perfection.</li><li>I allow myself to be seen before I feel ready.</li></ul></section>
-  </template>
-
-  <template id="report-template">
-    <section class="panel stack">
-      <div class="section-head"><div><p class="label">Weekly Report</p><h3 id="weekTitle">This week</h3></div></div>
-      <div id="weeklyStats" class="report-grid"></div>
-      <textarea id="weeklyWorked" placeholder="What worked this week?"></textarea>
-      <textarea id="weeklyImprove" placeholder="What will I improve next week?"></textarea>
-    </section>
-  </template>
-
   <script src="script.js"></script>
 </body>
 </html>
