@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7fbff" />
+  <title>90 Days Life Program</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="ambient ambient-blue"></div>
+  <div class="ambient ambient-green"></div>
+  <div class="ambient ambient-gold"></div>
+
+  <main class="app">
+    <header class="hero card">
+      <div>
+        <p class="eyebrow">Appu’s Personal Operating System</p>
+        <h1>90 Days Life Program</h1>
+        <p class="north-star">Health is the Main Quest. Everything else is a side quest.</p>
+      </div>
+      <div class="day-ring" aria-label="90 day progress">
+        <svg viewBox="0 0 120 120">
+          <circle class="track" cx="60" cy="60" r="52"></circle>
+          <circle class="progress" id="ringProgress" cx="60" cy="60" r="52"></circle>
+        </svg>
+        <div><strong id="dayNumber">1</strong><span>/ 90</span></div>
+      </div>
+    </header>
+
+    <section class="affirmation card">
+      <span>Today’s anchor</span>
+      <h2 id="affirmationText">I am becoming a man who takes care of the body God entrusted to him.</h2>
+    </section>
+
+    <nav class="tabs" aria-label="App sections">
+      <button class="tab active" data-tab="today">Today</button>
+      <button class="tab" data-tab="health">Health</button>
+      <button class="tab" data-tab="visibility">Visibility</button>
+      <button class="tab" data-tab="money">Money</button>
+      <button class="tab" data-tab="review">Review</button>
+      <button class="tab" data-tab="rules">Rules</button>
+    </nav>
+
+    <section id="today" class="panel active">
+      <div class="grid two">
+        <div class="card">
+          <div class="section-title"><h2>Daily Foundation</h2><span id="foundationScore">0/11</span></div>
+          <div id="habitList" class="check-list"></div>
+        </div>
+        <div class="card schedule-card">
+          <div class="section-title"><h2>Today’s Focus</h2><span id="todayName">Monday</span></div>
+          <div id="todayTasks" class="focus-list"></div>
+          <div class="soft-note">No catching up. No punishment. Just return.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="health" class="panel">
+      <div class="grid two">
+        <div class="card">
+          <div class="section-title"><h2>Health Check-in</h2><span>Targets set</span></div>
+          <div class="metrics">
+            <label>Protein <small>target 90g</small><input id="protein" type="number" placeholder="0" inputmode="decimal"><b>g</b></label>
+            <label>Water <small>target 3L</small><input id="water" type="number" step="0.1" placeholder="0" inputmode="decimal"><b>L</b></label>
+            <label>Steps <small>target 7000</small><input id="steps" type="number" placeholder="0" inputmode="numeric"><b></b></label>
+            <label>Sleep <small>target 8h</small><input id="sleep" type="number" step="0.1" placeholder="0" inputmode="decimal"><b>h</b></label>
+          </div>
+          <button class="primary" id="saveHealth">Save health check-in</button>
+        </div>
+
+        <div class="card">
+          <div class="section-title"><h2>Body Signals</h2><span>Simple entry</span></div>
+          <div class="metrics body-signals">
+            <label>Blood Pressure <small>example 120/80</small><input id="bp" type="text" placeholder="120/80"></label>
+            <label>Mood <small>1–10</small><input id="mood" type="number" min="1" max="10" placeholder="7"></label>
+            <label>Energy <small>1–10</small><input id="energy" type="number" min="1" max="10" placeholder="7"></label>
+            <label>Wrist Pain <small>1–10</small><input id="wrist" type="number" min="0" max="10" placeholder="3"></label>
+          </div>
+        </div>
+      </div>
+      <div class="card progress-card">
+        <div class="section-title"><h2>Today’s Health Progress</h2><span id="healthPercent">0%</span></div>
+        <div id="healthBars"></div>
+      </div>
+    </section>
+
+    <section id="visibility" class="panel">
+      <div class="card">
+        <div class="section-title"><h2>Visibility Pipeline</h2><span>90 days repeating</span></div>
+        <p class="mini-copy">Wednesday create. Friday review. Sunday post. No creating and posting on the same day.</p>
+        <div class="visibility-week" id="visibilityWeek"></div>
+        <div class="pipeline">
+          <label><input type="checkbox" id="created"> Created</label>
+          <label><input type="checkbox" id="reviewed"> Reviewed</label>
+          <label><input type="checkbox" id="posted"> Posted</label>
+        </div>
+        <div class="soft-note">Every second week must include your face, voice, speaking to camera, or you visibly present.</div>
+      </div>
+    </section>
+
+    <section id="money" class="panel">
+      <div class="grid two">
+        <div class="card">
+          <div class="section-title"><h2>Daily Money Check</h2><span>Calm, not fear</span></div>
+          <textarea id="moneyCheck" placeholder="What did I spend today? What came in? What needs attention tomorrow?"></textarea>
+          <button class="primary" id="saveMoney">Save money check</button>
+        </div>
+        <div class="card quote-card">
+          <h2>I trust myself with money.</h2>
+          <p>Today’s success is awareness, not perfection.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="review" class="panel">
+      <div class="card">
+        <div class="section-title"><h2>Sunday Weekly Review</h2><span>Scores /10</span></div>
+        <div class="review-grid">
+          <label>Health<input id="scoreHealth" type="number" min="0" max="10"></label>
+          <label>Creativity<input id="scoreCreativity" type="number" min="0" max="10"></label>
+          <label>Visibility<input id="scoreVisibility" type="number" min="0" max="10"></label>
+          <label>Money<input id="scoreMoney" type="number" min="0" max="10"></label>
+          <label>Spirituality<input id="scoreSpirituality" type="number" min="0" max="10"></label>
+        </div>
+        <textarea id="weeklyReflection" placeholder="What worked? What didn’t? What am I learning? What will I improve next week?"></textarea>
+        <button class="primary" id="saveReview">Save weekly review</button>
+      </div>
+    </section>
+
+    <section id="rules" class="panel">
+      <div class="card">
+        <div class="section-title"><h2>The Rules</h2><span>Read when overwhelmed</span></div>
+        <ol class="rules">
+          <li><strong>Health is the Main Quest.</strong> Everything else is a side quest.</li>
+          <li><strong>Never Miss Twice.</strong> If I miss once, I simply return.</li>
+          <li><strong>No Catching Up.</strong> No punishment. No doubling tasks.</li>
+          <li><strong>Recovery Counts.</strong> Recovery is productive.</li>
+          <li><strong>80% Consistency Wins.</strong> Perfection is not required.</li>
+          <li><strong>No New Systems for 90 Days.</strong> Follow this system.</li>
+          <li><strong>My body comes before my ego.</strong> If my body needs rest, recovery wins.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Saved</div>
+  <script src="script.js"></script>
+</body>
+</html>
